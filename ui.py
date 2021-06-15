@@ -58,7 +58,7 @@ label_title.grid(row=2,column=0,columnspan=3)
 
 
 #DESCRIPTION
-label_title=Label(frame,text="There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text",bg="#f8f5f1",wraplength=300)
+label_title=Label(frame,text="Copia y pega un link en la barra de la pagina tumangaonline.site sin capitulo como se muestra en el ejemplo, elige desde que capitulo hasta que capitulo quieres descargar y da click en play",bg="#f8f5f1",wraplength=300)
 label_title.config(font=("Courier bold",8),justify=LEFT)
 label_title.grid(row=3,column=0,columnspan=3)
 
@@ -84,7 +84,7 @@ entry_hasta.grid(row=5,column=1,padx=5,pady=5)
 img_button=Image.open("img/icons/icon_play.png")
 img_button=img_button.resize((55,50), Image.ANTIALIAS)
 img_button=ImageTk.PhotoImage(img_button)
-button_start=Button(frame,borderwidth=0,image=img_button,command=lambda:startProcessDownload(entry_url_masive.get(),entry_desde.get(),entry_hasta.get()))
+button_start=Button(frame,borderwidth=0,image=img_button,command=lambda:startProcessDownload(entry_url_masive.get(),entry_desde.get(),entry_hasta.get(),frame))
 button_start.grid(row=4,column=2,rowspan=2)
 
 
@@ -97,13 +97,10 @@ label_img.grid(row=2,column=3,padx=5,pady=5,rowspan=6)
 
 
 #HILO
-def startProcessDownload(url,from_cap,to):
-    bar=Progress_Bar(frame)
-    text=Label(frame,text="Descargando...",bg="#f8f5f1")
-    text.config(font=("Courier",8))
-    text.grid(row=6,column=1)
-    thread= threading.Thread(target=starDownload,args=(url,int(from_cap),int(to),bar,text))
+def startProcessDownload(url,from_cap,to,frame,button_start=button_start):
+    thread = threading.Thread(target=starDownload,args=(url,int(from_cap),int(to),frame,button_start))
     thread.start()
+    
 
 
 root.mainloop()

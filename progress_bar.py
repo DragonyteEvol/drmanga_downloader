@@ -16,8 +16,7 @@ class Progress_Bar(ttk.Frame):
             )
 
         super().__init__(main_window)
-        self.progressbar = ttk.Progressbar(self,mode="indeterminate",style="custom.Horizontal.TProgressbar",orient="horizontal")
-        self.progressbar.step(100)
-        self.progressbar.grid(row=6,column=0,columnspan=1)
-        self.grid(row=6,column=0,columnspan=1)
-        self.progressbar.start(10)
+        self.progressbar = ttk.Progressbar(self,mode="indeterminate",style="custom.Horizontal.TProgressbar",orient="horizontal",length=350)
+        self.progressbar.grid(row=6,column=0,columnspan=3)
+        self.grid(row=6,column=0,columnspan=3)
+        self.progressbar.start(5)
