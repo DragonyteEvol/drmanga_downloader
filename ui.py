@@ -3,6 +3,7 @@ from progress_bar import *
 from tkinter import *
 from functions_ui import *
 from PIL import Image,ImageTk
+from messagebox import * 
 #TUMANGAONLINE
 
 
@@ -16,14 +17,14 @@ barmenu=Menu(root,bg="#f8f5f1",border=0,borderwidth=0)
 root.config(menu=barmenu)
 
 menu_archivo=Menu(barmenu,tearoff=0,bg="#f8f5f1")
-menu_archivo.add_command(label="Salir")
+menu_archivo.add_command(label="Salir",command=lambda:closeProgram())
 
 
 menu_edicion=Menu(barmenu,tearoff=0,bg="#f8f5f1")
-menu_edicion.add_command(label="Borrar Datos")
+menu_edicion.add_command(label="Borrar Datos",command=lambda:clearData(entry_url_masive,entry_desde,entry_hasta))
 
 menu_ayuda=Menu(barmenu,tearoff=0,bg="#f8f5f1")
-menu_ayuda.add_command(label="Acerca de")
+menu_ayuda.add_command(label="Acerca de",command=lambda:InfoMessageBox(root,title="Dragonyte",btn_text="Aceptar",msg="Dragonyte\nV.1.0(unstable)\nPython 3.6"))
 menu_ayuda.add_command(label="Guia")
 
 #datayuda.add_command(label="Acerca de",command=infoAdicional)
@@ -44,7 +45,7 @@ label_url.grid(row=1,column=0,columnspan=3)
 
 #SEARH ENTRY-LABEL
 entry_search=Entry(frame,fg="#d8e3e7",borderwidth=0)
-entry_search.config(font=("Courier",10))
+entry_search.config(font=("Courier",10),state="disabled")
 entry_search.grid(row=0,column=3,padx=5,pady=5)
 entry_search.insert(0,'Buscar')
 label_search=Label(frame,text="ej:boku-no-hero-academia",bg="#f8f5f1")

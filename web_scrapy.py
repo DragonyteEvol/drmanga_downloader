@@ -13,7 +13,7 @@ def generateCaps(num_1,num_2):
         num_1+=1
     return caps
 
-def scrapTumangaonline(url,arrayCaps,acept=0):
+def scrapTumangaonline(url,arrayCaps):
     manga_name=str(url).replace("https://tumangaonline.site/manga/","")
     same=scrapPageTumangaOnline(url)
     for x in arrayCaps:
@@ -22,34 +22,9 @@ def scrapTumangaonline(url,arrayCaps,acept=0):
             url_l=url + "/"+str(x)+"/"
         else:
             url_l=url + "/ "+str(x)+"/"
-        acept=0
-        i=1
-        while i<40:
-            if(acept>1):
+        for i in range(505):
+            if(downloadPage(i+1,url_l,manga_name,x)==False):
                 break
-            if(i>0):
-                url_i=url_l + str(i)
-                r=requests.get(url_i)
-                soup=BeautifulSoup(r.content,'lxml')
-                tags=soup.find_all('img',{'class','img-responsive scan-page'})
-                for tag in tags:
-                    url_d=tag.get('src')
-                    #url_f=url_d.replace(" ","")
-                    url_f=url_d.strip()
-                    try:
-                        folder='manga/'+manga_name+'/'+str(x)
-                        os.makedirs(folder)
-                    except OSError as e:
-                        if e.errno != errno.EEXIST:
-                            raise
-                    route='manga/'+manga_name+"/"+str(x)+'/'+str(i)+".png"
-                    file=requests.get(url_f)
-                    if(file.status_code==404):
-                        acept+=1
-                    #wget.download(url_f,route)
-                    open(route,'wb').write(file.content)
-                    #os.system('wget '+url_f)
-            i+=1
     return True
 
 
@@ -67,4 +42,60 @@ def scrapPageTumangaOnline(url):
             caps_f.append(cap)
     return caps_f
  
+def downloadPage(i,url_l,manga_name,x):
+    url_i=url_l + str(i)
+    r = requests.get(url_i)
+    soup=BeautifulSoup(r.content,'lxml')
+    tags=soup.find_all('img',{'class','img-responsive scan-page'})
+    if(len(tags)==0):
+        return False
+    for tag in tags:
+        url_d=tag.get('src')
+        #url_f=url_d.replace(" ","")
+        url_f=url_d.strip()
+        try:
+            folder='manga/'+manga_name+'/'+str(x)
+            os.makedirs(folder)
+        except OSError as e:
+            if e.errno != errno.EEXIST:
+                raise
+        route='manga/'+manga_name+"/"+str(x)+'/'+str(i)+".png"
+        file=requests.get(url_f)
+        print(i)
+        #wget.download(url_f,route)
+        open(route,'wb').write(file.content)
+        #os.system('wget '+url_f)
+    return True
+
+def downloadAllCaps(url_z):
+    same=scrapPageTumangaOnline(url_z)
+    for url in same:
+        manga_name=str(url_z).replace("https://tumangaonline.site/manga/","")
+        manga_cap=str(url).replace("https://tumangaonline.site/manga/","")
+        for i in range(505):
+            url_i=url+'/'+str(i)
+            r = requests.get(url_i)
+            soup=BeautifulSoup(r.content,'lxml')
+            tags=soup.find_all('img',{'class','img-responsive scan-page'})
+            if(len(tags)==0):
+                return False
+            for tag in tags:
+                url_d=tag.get('src')
+                #url_f=url_d.replace(" ","")
+                url_f=url_d.strip()
+                try:
+                    folder='manga/'+manga_name+'/'+manga_cap
+                    os.makedirs(folder)
+                except OSError as e:
+                    if e.errno != errno.EEXIST:
+                        raise
+                route='manga/'+manga_name+"/"+manga_cap+'/'+str(i)+".png"
+                file=requests.get(url_f)
+                print(i)
+                #wget.download(url_f,route)
+                open(route,'wb').write(file.content)
+                #os.system('wget '+url_f)
+
+        
+
 
