@@ -43,14 +43,22 @@ def scrapPageTumangaOnline(url):
     return caps_f
  
 def downloadPage(i,url_l,manga_name,x):
-    url_i=url_l + str(i)
+    url_i=url_l.replace(" ","") + 'p/' +str(i)
+    print(url_i)
     r = requests.get(url_i)
+    f= open('lala.txt','w')
+    f.write(str(r.content))
     soup=BeautifulSoup(r.content,'lxml')
-    tags=soup.find_all('img',{'class','img-responsive scan-page'})
+    # wp-manga-chapter-img img-responsive effect-fade lazyloaded
+    tags=soup.find_all('img',{'class','wp-manga-chapter-img'})
     if(len(tags)==0):
+        print("nada")
         return False
     for tag in tags:
-        url_d=tag.get('src')
+        url_d=tag.get('data-src')
+        print("entre")
+        print(url_d)
+        print("entre esto")
         #url_f=url_d.replace(" ","")
         url_f=url_d.strip()
         try:
@@ -59,7 +67,7 @@ def downloadPage(i,url_l,manga_name,x):
         except OSError as e:
             if e.errno != errno.EEXIST:
                 raise
-        route='manga/'+manga_name+"/"+str(x)+'/'+str(i)+".png"
+        route='manga/'+manga_name+"/"+str(x)+'/'+str(i)+".webp"
         file=requests.get(url_f)
         print(i)
         #wget.download(url_f,route)
