@@ -3,6 +3,8 @@ from progress_bar import *
 from tkinter import messagebox
 import notify2
 import sys
+from io import BytesIO
+from PIL import Image,ImageTk
 
 #FUNTIONAL FUNCT
 def starDownload(url,from_cap,to,frame,button):
@@ -19,7 +21,7 @@ def starDownload(url,from_cap,to,frame,button):
             wn.set_timeout(5000)
             wn.show()
         except Exception as error:
-            print('', 'notify2: {0}'.format(error))
+            print('pila', 'notify2: {0}'.format(error))
         return True
     else:
         progress_bar.grid_forget()
@@ -30,9 +32,10 @@ def closeProgram():
     sys.exit()
 
 def about():
-    messagebox.showinfo("Dragonyte","Version 1.0 unstable")
+    messagebox.showinfo("Dragonyte","Version 1.1 unstable")
 
 def clearData(l1,l2,l3):
     l1.delete(0,'end')
     l2.delete(0,'end')
     l3.delete(0,'end')
+

@@ -2,108 +2,63 @@ from bs4 import BeautifulSoup
 import requests
 import os
 import errno
-import wget
 
+# Genera un array de los capitulos a descargar
 def generateCaps(num_1,num_2):
     caps=[num_1]
-    numvariable=num_1
+    num_variable=num_1
     while num_2>num_1:
-        numvariable=numvariable+1
-        caps.append(numvariable)
+        num_variable=num_variable+1
+        caps.append(num_variable)
         num_1+=1
-    return caps
+    return caps #Array de capitulos
+
+# Genera el nombre del manga a apartir de la url
+def generateMangaName(url):
+    manga_name = str(url).replace("https://tumangaonline.site/manga/","")
+    return manga_name
+
 
 def scrapTumangaonline(url,arrayCaps):
-    manga_name=str(url).replace("https://tumangaonline.site/manga/","")
-    same=scrapPageTumangaOnline(url)
-    for x in arrayCaps:
-        url_l=url + "/"+str(x)
-        if(url_l in same):
-            url_l=url + "/"+str(x)+"/"
-        else:
-            url_l=url + "/ "+str(x)+"/"
-        for i in range(505):
-            if(downloadPage(i+1,url_l,manga_name,x)==False):
+    for cap in arrayCaps:
+        folder = createMangaFolder(url,cap)
+        for page_cap in range(505):
+            url_cap_page=url + "/" + str(cap) + "/p/" + str(page_cap + 1) #Url con el capitulo y la pagina
+            print(url_cap_page)
+            if(downloadCaps(url_cap_page,cap,page_cap+1,folder)==False):
                 break
     return True
 
-
-def scrapPageTumangaOnline(url):
-    r=requests.get(url)
-    soup = BeautifulSoup(r.content,"lxml")
-    tags= soup("a")
-    caps=[]
-    caps_f=[]
-    for tag in tags:
-        caps.append(tag.get('href'))
-
-    for cap in caps:
-        if(url+'/' in cap):
-            caps_f.append(cap)
-    return caps_f
- 
-def downloadPage(i,url_l,manga_name,x):
-    url_i=url_l.replace(" ","") + 'p/' +str(i)
-    print(url_i)
-    r = requests.get(url_i)
-    f= open('lala.txt','w')
-    f.write(str(r.content))
-    soup=BeautifulSoup(r.content,'lxml')
+def requestImages(url):
+    response = requests.get(url)
+    soup=BeautifulSoup(response.content,'lxml')
     # wp-manga-chapter-img img-responsive effect-fade lazyloaded
     tags=soup.find_all('img',{'class','wp-manga-chapter-img'})
-    if(len(tags)==0):
-        print("nada")
+    return tags
+
+def createMangaFolder(url,cap):
+    try:
+        folder_route = 'manga/' + generateMangaName(url) + str(cap) + '/'
+        os.makedirs(folder_route)
+        return folder_route
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
+
+def saveImage(url,route):
+    image = requests.get(url)
+    open(route,'wb').write(image.content)
+
+
+def downloadCaps(url,cap,page,folder_route):
+    tags = requestImages(url)
+    if(len(tags) > 0):
+        for tag in tags:
+            data_source = tag.get('data-src')
+            route_image = folder_route + str(page) + ".webp"
+            print(route_image)
+            saveImage(data_source,route_image)
+        return True
+    else:
         return False
-    for tag in tags:
-        url_d=tag.get('data-src')
-        print("entre")
-        print(url_d)
-        print("entre esto")
-        #url_f=url_d.replace(" ","")
-        url_f=url_d.strip()
-        try:
-            folder='manga/'+manga_name+'/'+str(x)
-            os.makedirs(folder)
-        except OSError as e:
-            if e.errno != errno.EEXIST:
-                raise
-        route='manga/'+manga_name+"/"+str(x)+'/'+str(i)+".webp"
-        file=requests.get(url_f)
-        print(i)
-        #wget.download(url_f,route)
-        open(route,'wb').write(file.content)
-        #os.system('wget '+url_f)
-    return True
-
-def downloadAllCaps(url_z):
-    same=scrapPageTumangaOnline(url_z)
-    for url in same:
-        manga_name=str(url_z).replace("https://tumangaonline.site/manga/","")
-        manga_cap=str(url).replace("https://tumangaonline.site/manga/","")
-        for i in range(505):
-            url_i=url+'/'+str(i)
-            r = requests.get(url_i)
-            soup=BeautifulSoup(r.content,'lxml')
-            tags=soup.find_all('img',{'class','img-responsive scan-page'})
-            if(len(tags)==0):
-                return False
-            for tag in tags:
-                url_d=tag.get('src')
-                #url_f=url_d.replace(" ","")
-                url_f=url_d.strip()
-                try:
-                    folder='manga/'+manga_name+'/'+manga_cap
-                    os.makedirs(folder)
-                except OSError as e:
-                    if e.errno != errno.EEXIST:
-                        raise
-                route='manga/'+manga_name+"/"+manga_cap+'/'+str(i)+".png"
-                file=requests.get(url_f)
-                print(i)
-                #wget.download(url_f,route)
-                open(route,'wb').write(file.content)
-                #os.system('wget '+url_f)
-
-        
-
 

@@ -4,6 +4,8 @@ from tkinter import *
 from functions_ui import *
 from PIL import Image,ImageTk
 from messagebox import * 
+from io import BytesIO
+
 #TUMANGAONLINE
 
 
@@ -79,6 +81,12 @@ entry_hasta=Entry(frame,borderwidth=0)
 entry_hasta.config(font=("Courier",8))
 entry_hasta.grid(row=5,column=1,padx=5,pady=5)
 
+#IMG
+img_base=Image.open("img/poster_null.jpg")
+img_base=img_base.resize((160,200), Image.ANTIALIAS)
+img_base=ImageTk.PhotoImage(img_base)
+label_img=Label(frame,image=img_base)
+label_img.grid(row=2,column=3,padx=5,pady=5,rowspan=6)
 
 
 
@@ -87,14 +95,6 @@ img_button=img_button.resize((55,50), Image.ANTIALIAS)
 img_button=ImageTk.PhotoImage(img_button)
 button_start=Button(frame,borderwidth=0,image=img_button,command=lambda:startProcessDownload(entry_url_masive.get(),entry_desde.get(),entry_hasta.get(),frame))
 button_start.grid(row=4,column=2,rowspan=2)
-
-
-#IMG
-img_base=Image.open("img/poster_null.jpg")
-img_base=img_base.resize((160,200), Image.ANTIALIAS)
-img_base=ImageTk.PhotoImage(img_base)
-label_img=Label(frame,image=img_base)
-label_img.grid(row=2,column=3,padx=5,pady=5,rowspan=6)
 
 
 #HILO
