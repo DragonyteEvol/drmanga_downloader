@@ -11,6 +11,6 @@ Usage
 2.Select a range of chapters to download
 3.Click on play
 
-![Image text](https://github.com/zzuljs/CppLearning/blob/master/CppLearning/raw/master/Itachi.jpg)
+![Image text](https://tumangaonline.site/wp-content/uploads/2022/03/my-underworld-boyfriend-manga-thumbnail-193x278.jpg)
 
 
